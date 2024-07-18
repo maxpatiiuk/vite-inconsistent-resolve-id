@@ -5,15 +5,18 @@ export default defineConfig({
   build: {
     lib: {
       formats: ["es"],
-      entry: "src/virtual-file.js",
+      entry: "virtual-file.js",
     },
   },
   plugins: [
     {
       name: "resolve-id",
-      resolveId(id) {
-        if (!id.endsWith("virtual-file")) return undefined;
-        console.log(id);
+      resolveId(id): string | undefined {
+        // On Windows, during build, this is called with an absolute path like C:\Users\root\... rather than C:/Users/root/...
+        if (!id.endsWith("virtual-file.js")) {
+          return undefined;
+        }
+        console.log("resolveId called with: ", id);
         return resolve("main.js");
       },
     },
